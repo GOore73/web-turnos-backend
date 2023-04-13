@@ -1,18 +1,25 @@
+//Variables de entorno
+import dotenv from 'dotenv';
+dotenv.config();
+import morgan from 'morgan';     //TRAZADOR MORGAN
 import express from 'express';
-import constants from './constants.js';
 import cors from 'cors';
 
 
-const { API_VERSION } = constants;
-
 const app = express();
 
-// import routings
+
+// import routes
 import authRoutes from '../../routers/auth.js';
+import userRoutes from '../../routers/user.js';
+
 
 
 // Configure Body Parse
-app.use(express.json());
+app.use(express.json());        
+
+// Configure morgan tracer
+app.use(morgan('dev'));          //INICIAR TRAZADOR MORGAN
 
 // Configure static folders
 app.use(express.static('uploads'));
@@ -23,7 +30,8 @@ app.use(cors());
 
 
 // Configure routings
-app.use(`/api/${API_VERSION}`, authRoutes);
+app.use(`/api/${process.env.API_VERSION}`, authRoutes);
+app.use(`/api/${process.env.API_VERSION}`, userRoutes);
 
 export default app; 
 
