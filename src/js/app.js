@@ -13,6 +13,9 @@ const app = express();
 import authRoutes from '../../routers/auth.js';
 import userRoutes from '../../routers/user.js';
 import menuRoutes from '../../routers/menu.js';
+import courseRoutes from '../../routers/course.js';
+import postRoutes from '../../routers/post.js';
+import newsletterRoutes from '../../routers/news.js';
 
 
 // Configure Body Parse
@@ -33,6 +36,9 @@ app.use(cors());
 app.use(`/api/${process.env.API_VERSION}`, authRoutes);
 app.use(`/api/${process.env.API_VERSION}`, userRoutes);
 app.use(`/api/${process.env.API_VERSION}`, menuRoutes);
+app.use(`/api/${process.env.API_VERSION}`, courseRoutes);
+app.use(`/api/${process.env.API_VERSION}`, postRoutes);
+app.use(`/api/${process.env.API_VERSION}`, newsletterRoutes);
 
 export default app; 
 

@@ -43,14 +43,13 @@ const createUser = async (req, res) => {
   const hashPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
   const user =  new User({
-    ...req.body,
+    ...req.body,  //spread
     active: false,
     password: hashPassword,
   });
 
   if(req.files.avatar) {
     //llega el file
-    //ToDo
     user.avatar = image.getFilePath (req.files.avatar);
   }
 
