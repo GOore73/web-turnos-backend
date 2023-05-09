@@ -5,8 +5,8 @@ import user from '../models/user.js';
 
 
 
-const register = async (req,res)=>{
-  const { 
+const register = async (req, res) => {
+  const {
     firstname,
     lastname,
     email,
@@ -14,20 +14,20 @@ const register = async (req,res)=>{
   } = req.body;
 
   if (!email) {
-    res.status(400).send({msg: "El email es obligatorio"});
+    res.status(400).send({ msg: "El email es obligatorio" });
     return;
   }
   if (!password) {
-    res.status(400).send({msg: "La contraseña es obligatoria"});
+    res.status(400).send({ msg: "La contraseña es obligatoria" });
     return;
   };
-  
+
   //generación del hash de manera sincrónica. Existe un método asincrónico cuyos ejemplos pueden verse en:
   // https://javascript.hotexamples.com/es/examples/bcryptjs/-/hash/javascript-hash-function-examples.html
-  const hashPassword = bcryptjs.hashSync(password,bcryptjs.genSaltSync(10));
+  const hashPassword = bcryptjs.hashSync(password, bcryptjs.genSaltSync(10));
 
   const user = new User({
-    firstname, 
+    firstname,
     lastname,
     email: email.toLowerCase(),
     password: hashPassword,
@@ -36,67 +36,67 @@ const register = async (req,res)=>{
   });
 
   try {
-    await user.save(); 
+    await user.save();
     res.status(200).send(user);
   } catch (error) {
-    res.status(400).send({msg: `Error al crear el usuario, ${error}`});
-  } 
+    res.status(400).send({ msg: `Error al crear el usuario, ${error}` });
+  }
 };
 
-const login = async (req,res) => {
-  const {email, password} = req.body;
-  if(!email) res.status(400).send({msg: "El email es obligatorio"});
-  if(!password) res.status(400).send({msg: "La constraseña es obligatoria"});
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email) res.status(400).send({ msg: "El email es obligatorio" });
+  if (!password) res.status(400).send({ msg: "La constraseña es obligatoria" });
 
   const emailLowerCase = email.toLowerCase();
-  console.log ("email lcase: ", emailLowerCase);
+  console.log("email lcase: ", emailLowerCase);
 
   //buscar usuario
   try {
     // voy a Atlas y busco usuario por su email
-    const userStore = await User.findOne({email: emailLowerCase}).exec();
+    const userStore = await User.findOne({ email: emailLowerCase }).exec();
     if (!userStore) {
       // no encontró el usuario
-      res.status(401).send({msg: "Usuario no registrado"});
+      res.status(401).send({ msg: "Usuario no registrado" });
     } else if (!await bcryptjs.compare(password, userStore.password)) {
       // no coincide clave
-      res.status(401).send({msg: "La clave no es correcta"});
+      res.status(401).send({ msg: "La clave no es correcta" });
     } else if (!userStore.active) {
       // no está activo
-      res.status(401).send({msg: "Usuario no está activo"});
+      res.status(401).send({ msg: "Usuario no está activo" });
     } else {
       // superó todos los controles
       res.status(200).send({
         msg: "OK",
         access: jwt.createAccessToken(userStore),
-        refresh: jwt.createRefreshToken(userStore) 
+        refresh: jwt.createRefreshToken(userStore)
       });
     }
   } catch (error) {
-    res.status(500).send({msg: "error"});
+    res.status(500).send({ msg: "error" });
   }
 };
 
 const refreshAccessToken = async (req, res) => {
-  const {token} = req.body;
+  const { token } = req.body;
 
   // validar token
   const validToken = jwt.decoded(token);
-  if(!validToken) {
+  if (!validToken) {
     //token no válido
-    res.status(401).send({msg: "Token inválido"});
+    res.status(401).send({ msg: "Token inválido" });
   } else {
-    const userStore = await (User.findOne({_id: validToken.user_id}).exec())
+    const userStore = await (User.findOne({ _id: validToken.user_id }).exec())
     if (!userStore) {
       //no existe el usuario
-      res.status(401).send({msg: "Usuario no existe"});
+      res.status(401).send({ msg: "Usuario no existe" });
     } else {
-    //superó los controles.
-    res.status(200).send({
-      accessToken: jwt.createAccessToken(userStore)
-    })
+      //superó los controles.
+      res.status(200).send({
+        accessToken: jwt.createAccessToken(userStore)
+      })
+    };
   };
-};
 };
 
 export default {
