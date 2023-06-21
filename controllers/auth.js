@@ -49,7 +49,6 @@ const login = async (req, res) => {
   if (!password) res.status(400).send({ msg: "La constraseña es obligatoria" });
 
   const emailLowerCase = email.toLowerCase();
-  console.log("email lcase: ", emailLowerCase);
 
   //buscar usuario
   try {
