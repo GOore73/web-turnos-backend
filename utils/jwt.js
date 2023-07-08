@@ -20,9 +20,9 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const createAccessToken = (user)=> {
+const createAccessToken = (user) => {
   const expToken = new Date();
-  expToken.setHours(expToken.getHours()+3);
+  expToken.setHours(expToken.getHours() + 1);
 
   const payload = {
     token_type: "access",
@@ -33,26 +33,28 @@ const createAccessToken = (user)=> {
   return jwt.sign(payload, process.env.JWT_SECRET_KEY);
 }
 
-const createRefreshToken = (user)=>{
+const createRefreshToken = (user) => {
+  console.log("Se ha ejecutado un RefresToken");
   const expToken = new Date();
-  expToken.setMonth(expToken.getMonth() + 1); //expira en un mes
-  
+  // expToken.setMonth(expToken.getMonth() + 1); //expira en un mes
+  expToken.setHours(expToken.getHours() + 8); //expira en 8hs; 
+
   const payload = {
     token_type: "refresh",
     user_id: user._id,
     iat: Date.now(),          //fecha de inicio del token
-    exp: expToken.getTime(),  //expiración + 1 mes
+    exp: expToken.getTime(),  //expiración + 8 hs
   };
   return jwt.sign(payload, process.env.JWT_SECRET_KEY);
 }
 
-const decoded = (token)=>{
+const decoded = (token) => {
   // verificar que se trate de un token válido
   try {
-    return jwt.verify(token,process.env.JWT_SECRET_KEY) 
+    return jwt.verify(token, process.env.JWT_SECRET_KEY)
   } catch (err) {
     // no es un token válido
-    return false; 
+    return false;
   }
 };
 

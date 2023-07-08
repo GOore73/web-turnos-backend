@@ -9,7 +9,10 @@ const CenterSchema = mongoose.Schema({
     state: String,
     country: String
   },
-  alias: String,
+  alias: {
+    type: String,
+    unique: true,
+  },
   active: Boolean,
   avatar: String,
 });
