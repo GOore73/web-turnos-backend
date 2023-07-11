@@ -7,6 +7,7 @@ const CenterSchema = mongoose.Schema({
     num: Number,
     city: String,
     state: String,
+    postcode: String,
     country: String
   },
   alias: {
@@ -14,7 +15,6 @@ const CenterSchema = mongoose.Schema({
     unique: true,
   },
   active: Boolean,
-  avatar: String,
 });
 
 export default mongoose.model("Center", CenterSchema);

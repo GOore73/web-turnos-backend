@@ -24,17 +24,11 @@ const createCenter = async (req, res) => {
 
   const center = new Center(req.body);
 
-  if (req.files.avatar) {
-    //llega el file
-    center.avatar = image.getFilePath(req.files.avatar);
-  }
-
   try {
     await center.save();
-    res.status(201).send({ msg: "Ok" });
+    res.status(201).send({ msg: "OK" });
   } catch (error) {
     res.status(400).send({ msg: `Error al crear el centro, ${error}` });
-    //ToDo: borrar el file de avatar si es que vino.
   }
 };
 
